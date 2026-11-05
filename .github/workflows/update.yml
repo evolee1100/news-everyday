@@ -1,0 +1,39 @@
+name: 更新新闻并部署
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # 每 30 分钟抓一次（GitHub 高峰时段可能延迟几分钟）
+  push:
+    branches: [main]
+  workflow_dispatch:          # 可在 Actions 页面手动点 Run
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: 抓取新闻
+        run: python3 server.py --build
+      - name: 准备网站文件
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/
+          cp data/news.json _site/data/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
