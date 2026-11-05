@@ -109,7 +109,7 @@ footer summary { cursor: pointer; }
 </div>
 
 <script>
-const BRIEF_N = 5;               // 今日必知：国际 / 大马 各几条
+const BRIEF_WORLD = 5, BRIEF_MY = 8;   // 今日必知：国际 / 大马 各几条
 const $ = s => document.querySelector(s);
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
@@ -166,7 +166,7 @@ function render() {
   const W = filt(data.world), M = filt(data.my);
   let html = "";
   if (state.view === "brief") {
-    const w = W.slice(0, BRIEF_N), m = M.slice(0, BRIEF_N);
+    const w = W.slice(0, BRIEF_WORLD), m = M.slice(0, BRIEF_MY);
     const all = [...w, ...m], seen = all.filter(x => read.has(x.link)).length;
     html += `<div class="progress"><span>今天 ${all.length} 条必知，约 ${Math.max(1, Math.round(all.length * 0.3))} 分钟</span>
       <div class="bar"><i style="width:${all.length ? seen / all.length * 100 : 0}%"></i></div><span>${seen}/${all.length}</span></div>`;
