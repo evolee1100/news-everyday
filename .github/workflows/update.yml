@@ -24,7 +24,20 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: 抓取新闻
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装 AI 翻译套件
+        run: pip install --quiet anthropic
+      # 翻译过的新闻存起来，下次只翻译新的，省钱
+      - uses: actions/cache@v4
+        with:
+          path: data/translations.json
+          key: translations-${{ github.run_id }}
+          restore-keys: translations-
+      - name: 抓取新闻 + 中文翻译
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 server.py --build
       - name: 准备网站文件
         run: |

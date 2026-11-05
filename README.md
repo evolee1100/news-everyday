@@ -25,6 +25,10 @@ python3 server.py
 
 改来源：编辑 `server.py` 顶部的 `SOURCES`。
 
+## AI 中文翻译（可选）
+
+设了 `ANTHROPIC_API_KEY`（GitHub 仓库 Settings → Secrets → Actions）后，每次更新会把马来西亚英文头条翻成大马华文媒体用语的中文标题和一句摘要。翻过的会缓存，只翻新的。默认模型 `claude-opus-5-5`，可用环境变量 `TRANSLATE_MODEL` 改成更便宜的 `claude-haiku-5-5`。没设 key 时自动跳过，网站照常更新。
+
 ## 部署成静态网站
 
 `python3 server.py --build` 生成 `data/news.json`，把 `index.html` 和 `data/` 一起上传到任何静态主机（GitHub Pages、Netlify 等），再用定时任务每 3 小时跑一次 `--build`。

@@ -9,6 +9,7 @@ import argparse
 import html
 import json
 import math
+import os
 import re
 import threading
 import time
@@ -250,7 +251,88 @@ def build_news():
         "world": world,
         "my": my,
         "status": status,
+        "translate": translate_zh(my),
     }
+
+
+# ---------------------------------------------------------------- AI 中文翻译（可选）
+TRANSLATE_MODEL = os.environ.get("TRANSLATE_MODEL", "claude-opus-5-5")
+TRANSLATE_CACHE = ROOT / "data" / "translations.json"
+TRANSLATE_PROMPT = """把下面的马来西亚英文新闻翻译成马来西亚华文媒体（星洲日报、东方日报）的写法，用简体字。
+规则：
+- 用大马华文媒体的惯用译名和用语：Prime Minister = 首相，Anwar Ibrahim = 安华，Ahmad Zahid Hamidi =阿末扎希，
+  Dewan Rakyat = 下议院，RM = 令吉，Bernama = 马新社，MACC = 反贪会，Sabah = 沙巴，Melaka = 马六甲，Penang = 槟城，
+  Johor = 柔佛，Selangor = 雪兰莪，DAP = 行动党，PKR = 公正党，UMNO = 巫统，PAS = 伊党，Bersatu = 土团党，
+  Pakatan Harapan = 希盟，Barisan Nasional = 国阵，Perikatan Nasional = 国盟。不确定的人名保留英文。
+- title_zh：新闻标题，简洁有力，像报纸标题，不超过 30 个字。
+- summary_zh：一句话说清楚发生了什么，不超过 50 个字；原文没有摘要就根据标题写，不要编造标题里没有的事实。
+- 每条都要回传，id 原样照抄。"""
+
+
+def _load_tcache():
+    try:
+        return json.loads(TRANSLATE_CACHE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def translate_zh(items):
+    """给英文新闻加上 title_zh / summary_zh。没有 API key 或出错时直接跳过，不影响网站。"""
+    cache = _load_tcache()
+    todo = [it for it in items if it["lang"] == "en" and it["link"] not in cache]
+    info = {"model": TRANSLATE_MODEL, "new": 0, "cached": 0, "error": None}
+    if todo:
+        try:
+            import anthropic
+            client = anthropic.Anthropic()
+            payload = [{"id": i, "title": it["title"], "summary": it["summary"]} for i, it in enumerate(todo)]
+            resp = client.beta.messages.create(
+                model=TRANSLATE_MODEL,
+                max_tokens=16000,
+                betas=["server-side-fallback-2026-07-01"],
+                fallbacks="default",
+                output_config={
+                    "effort": "low",
+                    "format": {"type": "json_schema", "schema": {
+                        "type": "object", "additionalProperties": False, "required": ["items"],
+                        "properties": {"items": {"type": "array", "items": {
+                            "type": "object", "additionalProperties": False,
+                            "required": ["id", "title_zh", "summary_zh"],
+                            "properties": {"id": {"type": "integer"}, "title_zh": {"type": "string"},
+                                           "summary_zh": {"type": "string"}}}}}}},
+                },
+                messages=[{"role": "user", "content": TRANSLATE_PROMPT + "\n\n" +
+                           json.dumps(payload, ensure_ascii=False)}],
+            )
+            if resp.stop_reason == "refusal":
+                raise RuntimeError("模型拒绝翻译这批新闻")
+            if resp.stop_reason == "max_tokens":
+                raise RuntimeError("输出被截断（max_tokens）")
+            text = "".join(b.text for b in resp.content if b.type == "text")
+            for row in json.loads(text)["items"]:
+                if 0 <= row["id"] < len(todo) and row["title_zh"].strip():
+                    cache[todo[row["id"]]["link"]] = {"title_zh": row["title_zh"].strip(),
+                                                      "summary_zh": row["summary_zh"].strip()}
+                    info["new"] += 1
+        except ImportError:
+            info["error"] = "没有安装 anthropic 套件（pip install anthropic），跳过翻译"
+        except Exception as e:  # 没 key、额度用完、网络问题……都不能让网站挂掉
+            info["error"] = f"{type(e).__name__}: {e}"[:300]
+    for it in items:
+        t = cache.get(it["link"])
+        if t:
+            it.update(t)
+            info["cached"] += 1
+    # 只保留最近的 600 条翻译，避免缓存无限变大
+    keep = dict(list(cache.items())[-600:])
+    try:
+        TRANSLATE_CACHE.parent.mkdir(exist_ok=True)
+        TRANSLATE_CACHE.write_text(json.dumps(keep, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+    if info["error"]:
+        print("翻译跳过：", info["error"])
+    return info
 
 
 # ---------------------------------------------------------------- 服务器
