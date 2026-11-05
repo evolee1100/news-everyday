@@ -27,4 +27,4 @@ python3 server.py
 
 ## 部署成静态网站
 
-`python3 server.py --build` 生成 `data/news.json`，把 `index.html` 和 `data/` 一起上传到任何静态主机（GitHub Pages、Netlify 等），再用定时任务每 30 分钟跑一次 `--build`。
+`python3 server.py --build` 生成 `data/news.json`，把 `index.html` 和 `data/` 一起上传到任何静态主机（GitHub Pages、Netlify 等），再用定时任务每 3 小时跑一次 `--build`。

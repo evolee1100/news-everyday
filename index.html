@@ -60,8 +60,9 @@ h2 .hint { font-weight: 400; color: var(--muted); font-size: 13.8px; }
 .thumb { width: 92px; height: 68px; border-radius: 9px; object-fit: cover; background: var(--line); }
 .done { opacity: .55; border-style: dashed; }
 .done .num, .done .title { color: var(--read); }
-.check { border: 1px solid var(--line); background: none; color: var(--muted); border-radius: 999px; font-size: 13.2px; padding: 1px 9px; }
-.done .check { background: var(--line); }
+.check { border: 1.5px solid var(--muted); background: none; color: var(--ink); border-radius: 999px; font-size: 16px; font-weight: 600; padding: 6px 16px; min-height: 36px; margin-left: auto; }
+.check:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.done .check { background: var(--line); border-color: var(--line); color: var(--muted); }
 
 .empty, .err { text-align: center; color: var(--muted); padding: 40px 0; }
 .allread { text-align: center; padding: 22px; margin-top: 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }

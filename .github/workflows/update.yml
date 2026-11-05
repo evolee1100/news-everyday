@@ -2,7 +2,7 @@ name: 更新新闻并部署
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # 每 30 分钟抓一次（GitHub 高峰时段可能延迟几分钟）
+    - cron: "0 */3 * * *"     # 每 3 小时抓一次（马来西亚时间 2、5、8、11 点…；高峰时段可能延迟几分钟）
   push:
     branches: [main]
   workflow_dispatch:          # 可在 Actions 页面手动点 Run
