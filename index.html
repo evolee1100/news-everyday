@@ -2,86 +2,80 @@
 <html lang="zh">
 <head>
 <meta charset="utf-8">
+<meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>地球速报</title>
 <style>
 :root {
-  --bg: #f6f5f1; --card: #ffffff; --ink: #1b1b1a; --muted: #6d6b66; --line: #e6e3dc;
+  --bg: #ffffff; --card: #ffffff; --ink: #1b1b1a; --muted: #6d6b66; --line: #e4e2dc;
   --accent: #c2410c; --accent-soft: #fdeee4; --my: #0f5f9c; --my-soft: #e5f0f9;
   --read: #a8a59e; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.04);
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #131312; --card: #1d1d1b; --ink: #ecebe7; --muted: #9b998f; --line: #2d2c29;
-    --accent: #fb8b4b; --accent-soft: #3a2316; --my: #6cb4ee; --my-soft: #15283a;
-    --read: #5f5d57; --shadow: none;
-  }
-}
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
-  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif; }
+  font: 17.6px/1.55 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif; }
 a { color: inherit; text-decoration: none; }
 .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 64px; }
 
 header { padding: 28px 0 8px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-h1 { margin: 0; font-size: 28px; letter-spacing: .02em; }
-h1 small { display: block; font-size: 14px; font-weight: 400; color: var(--muted); margin-top: 2px; letter-spacing: 0; }
-.meta { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+h1 { margin: 0; font-size: 30.8px; letter-spacing: .02em; }
+h1 small { display: block; font-size: 15.4px; font-weight: 400; color: var(--muted); margin-top: 2px; letter-spacing: 0; }
+.meta { font-size: 14.3px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
 button { font: inherit; cursor: pointer; }
-.btn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+.btn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; font-size: 14.3px; }
 .btn:hover { border-color: var(--muted); }
 .btn[disabled] { opacity: .5; cursor: wait; }
 
 nav { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 10px 0; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
 .seg { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
-.seg button { border: 0; background: none; color: var(--muted); padding: 5px 14px; border-radius: 999px; font-size: 14px; }
+.seg button { border: 0; background: none; color: var(--muted); padding: 5px 14px; border-radius: 999px; font-size: 15.4px; }
 .seg button.on { background: var(--ink); color: var(--bg); }
-.seg.small button { padding: 4px 10px; font-size: 12.5px; }
+.seg.small button { padding: 4px 10px; font-size: 13.8px; }
 
-.progress { margin: 18px 0 6px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.progress { margin: 18px 0 6px; display: flex; align-items: center; gap: 10px; font-size: 14.3px; color: var(--muted); }
 .bar { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
 
-h2 { font-size: 15px; margin: 26px 0 10px; display: flex; align-items: center; gap: 8px; }
-h2 .tag { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
+h2 { font-size: 16.5px; margin: 26px 0 10px; display: flex; align-items: center; gap: 8px; }
+h2 .tag { font-size: 13.2px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); }
 h2 .tag.my { background: var(--my-soft); color: var(--my); }
-h2 .hint { font-weight: 400; color: var(--muted); font-size: 12.5px; }
+h2 .hint { font-weight: 400; color: var(--muted); font-size: 13.8px; }
 
 .list { display: flex; flex-direction: column; gap: 10px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); display: grid; grid-template-columns: 28px 1fr auto; gap: 4px 12px; }
-.num { font-size: 20px; font-weight: 700; color: var(--accent); line-height: 1.3; font-variant-numeric: tabular-nums; }
+.num { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.3; font-variant-numeric: tabular-nums; }
 .card.my .num { color: var(--my); }
 .body { min-width: 0; }
-.title { font-size: 17px; font-weight: 650; line-height: 1.4; margin: 0; }
+.title { font-size: 18.7px; font-weight: 650; line-height: 1.4; margin: 0; }
 .title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.sum { color: var(--muted); font-size: 14px; margin: 4px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.foot { margin-top: 8px; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.sum { color: var(--muted); font-size: 15.4px; margin: 4px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.foot { margin-top: 8px; font-size: 13.8px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
 .hot { color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 6px; font-weight: 600; }
 .card.my .hot { color: var(--my); background: var(--my-soft); }
-.more { border: 0; background: none; color: var(--muted); padding: 0; font-size: 12.5px; text-decoration: underline; text-underline-offset: 2px; }
-.related { grid-column: 2 / -1; margin: 6px 0 0; padding: 8px 0 0; border-top: 1px dashed var(--line); font-size: 13.5px; list-style: none; display: none; }
+.more { border: 0; background: none; color: var(--muted); padding: 0; font-size: 13.8px; text-decoration: underline; text-underline-offset: 2px; }
+.related { grid-column: 2 / -1; margin: 6px 0 0; padding: 8px 0 0; border-top: 1px dashed var(--line); font-size: 14.9px; list-style: none; display: none; }
 .related.open { display: block; }
 .related li { padding: 3px 0; }
-.related b { font-weight: 600; color: var(--muted); font-size: 12px; margin-right: 6px; }
+.related b { font-weight: 600; color: var(--muted); font-size: 13.2px; margin-right: 6px; }
 .thumb { width: 92px; height: 68px; border-radius: 9px; object-fit: cover; background: var(--line); }
 .done { opacity: .55; border-style: dashed; }
 .done .num, .done .title { color: var(--read); }
-.check { border: 1px solid var(--line); background: none; color: var(--muted); border-radius: 999px; font-size: 12px; padding: 1px 9px; }
+.check { border: 1px solid var(--line); background: none; color: var(--muted); border-radius: 999px; font-size: 13.2px; padding: 1px 9px; }
 .done .check { background: var(--line); }
 
 .empty, .err { text-align: center; color: var(--muted); padding: 40px 0; }
 .allread { text-align: center; padding: 22px; margin-top: 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
-.allread strong { display: block; font-size: 18px; margin-bottom: 4px; }
-footer { margin-top: 40px; font-size: 12px; color: var(--muted); line-height: 1.8; }
+.allread strong { display: block; font-size: 19.8px; margin-bottom: 4px; }
+footer { margin-top: 40px; font-size: 13.2px; color: var(--muted); line-height: 1.8; }
 footer summary { cursor: pointer; }
 .src-bad { color: var(--accent); }
 
 @media (max-width: 560px) {
-  h1 { font-size: 24px; }
+  h1 { font-size: 26.4px; }
   .card { grid-template-columns: 22px 1fr; padding: 12px 14px; }
   .thumb { display: none; }
-  .title { font-size: 16px; }
-  .num { font-size: 17px; }
+  .title { font-size: 17.6px; }
+  .num { font-size: 18.7px; }
 }
 </style>
 </head>
