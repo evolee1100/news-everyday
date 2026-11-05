@@ -40,7 +40,6 @@ SOURCES = [
     # —— 马来西亚 ——
     {"name": "Free Malaysia Today", "region": "my", "lang": "en", "url": "https://www.freemalaysiatoday.com/category/nation/feed/"},
     {"name": "Malay Mail",          "region": "my", "lang": "en", "url": "https://www.malaymail.com/feed/rss/malaysia"},
-    {"name": "Malaysiakini",        "region": "my", "lang": "en", "url": "https://www.malaysiakini.com/rss/en/news.rss"},
     {"name": "Bernama",             "region": "my", "lang": "en", "url": "https://www.bernama.com/en/rssfeed.php"},
     {"name": "New Straits Times",   "region": "my", "lang": "en", "url": "https://www.nst.com.my/feed",
      "link_filter": r"/(news/(nation|politics|crime-courts)|business/economy)/"},
@@ -48,7 +47,6 @@ SOURCES = [
      "link_filter": r"/articles/(news|business)/"},
     {"name": "The Sun",             "region": "my", "lang": "en", "url": "https://thesun.my/rss/local"},
     {"name": "MalaysiaNow",         "region": "my", "lang": "en", "url": "https://www.malaysianow.com/feed"},
-    {"name": "当今大马",            "region": "my", "lang": "zh", "url": "https://www.malaysiakini.com/rss/zh/news.rss"},
     {"name": "诗华日报",            "region": "my", "lang": "zh", "url": "https://news.seehua.com/feed/",
      "cat_filter": r"西马|沙巴|砂|诗巫|古晋|美里|全国|大马|财经"},
 ]

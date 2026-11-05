@@ -21,7 +21,7 @@ python3 server.py
 ## 来源
 
 国际：BBC、Al Jazeera、The Guardian、NPR、CNA、BBC 中文、DW 中文、RFI 中文
-马来西亚：Free Malaysia Today、Malay Mail、Malaysiakini、Bernama、New Straits Times、The Vibes、The Sun、MalaysiaNow、当今大马、诗华日报
+马来西亚：Free Malaysia Today、Malay Mail、Bernama、New Straits Times、The Vibes、The Sun、MalaysiaNow、诗华日报（当今大马、Malaysiakini 要付费订阅，已移除）
 
 改来源：编辑 `server.py` 顶部的 `SOURCES`。
 
