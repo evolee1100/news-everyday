@@ -25,9 +25,11 @@ python3 server.py
 
 改来源：编辑 `server.py` 顶部的 `SOURCES`。
 
-## AI 中文翻译（可选）
+## 中文翻译
 
-设了 `ANTHROPIC_API_KEY`（GitHub 仓库 Settings → Secrets → Actions）后，每次更新会把马来西亚英文头条翻成大马华文媒体用语的中文标题和一句摘要。翻过的会缓存，只翻新的。默认模型 `claude-opus-5-5`，可用环境变量 `TRANSLATE_MODEL` 改成更便宜的 `claude-haiku-5-5`。没设 key 时自动跳过，网站照常更新。
+马来西亚英文头条会自动翻成中文标题：
+- **默认免费**：用 MyMemory 机器翻译（不用 key、不用付钱），每次更新翻最重要的约 20 条，翻过的会缓存。免费额度约每天 5000 字，用完就等下次。
+- **可选 AI 翻译**：在 GitHub 仓库 Settings → Secrets → Actions 加 `ANTHROPIC_API_KEY`，就改用 Claude 翻译，会用大马华文媒体的译名（安华、希盟、令吉）并附一句中文摘要，要付 API 费用。
 
 ## 部署成静态网站
 

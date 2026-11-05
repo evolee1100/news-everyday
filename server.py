@@ -13,6 +13,7 @@ import os
 import re
 import threading
 import time
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
@@ -276,12 +277,43 @@ def _load_tcache():
         return {}
 
 
+FREE_CHAR_BUDGET = 1500   # MyMemory 免费额度约每天 5000 字；每 3 小时一次 × 8 次，每次只用一点
+
+
+def _translate_free(todo, cache, info):
+    """免费机器翻译（MyMemory，不用 key）。只翻标题，按重要性从前往后翻，额度用完就停。"""
+    used = 0
+    for it in todo[:20]:
+        q = it["title"]
+        if used + len(q) > FREE_CHAR_BUDGET:
+            break
+        url = ("https://api.mymemory.translated.net/get?langpair=en%7Czh-CN&q=" +
+               urllib.parse.quote(q))
+        try:
+            d = json.loads(fetch(url, timeout=12))
+        except Exception as e:
+            info["error"] = f"{type(e).__name__}: {e}"[:200]
+            break
+        used += len(q)
+        zh = html.unescape((d.get("responseData") or {}).get("translatedText") or "").strip()
+        if d.get("quotaFinished") or d.get("responseStatus") not in (200, "200"):
+            info["error"] = "免费翻译额度用完了，下次更新再继续"
+            break
+        # 翻不出来时 MyMemory 会原样回传英文或报错文字，这种就不要
+        if zh and re.search(r"[\u4e00-\u9fff]", zh) and "MYMEMORY" not in zh.upper():
+            cache[it["link"]] = {"title_zh": zh, "summary_zh": "", "tr": "free"}
+            info["new"] += 1
+
+
 def translate_zh(items):
     """给英文新闻加上 title_zh / summary_zh。没有 API key 或出错时直接跳过，不影响网站。"""
     cache = _load_tcache()
     todo = [it for it in items if it["lang"] == "en" and it["link"] not in cache]
-    info = {"model": TRANSLATE_MODEL, "new": 0, "cached": 0, "error": None}
-    if todo:
+    use_ai = bool(os.environ.get("ANTHROPIC_API_KEY"))
+    info = {"engine": TRANSLATE_MODEL if use_ai else "MyMemory（免费）", "new": 0, "cached": 0, "error": None}
+    if todo and not use_ai:
+        _translate_free(todo, cache, info)
+    elif todo:
         try:
             import anthropic
             client = anthropic.Anthropic()
@@ -312,7 +344,7 @@ def translate_zh(items):
             for row in json.loads(text)["items"]:
                 if 0 <= row["id"] < len(todo) and row["title_zh"].strip():
                     cache[todo[row["id"]]["link"]] = {"title_zh": row["title_zh"].strip(),
-                                                      "summary_zh": row["summary_zh"].strip()}
+                                                      "summary_zh": row["summary_zh"].strip(), "tr": "ai"}
                     info["new"] += 1
         except ImportError:
             info["error"] = "没有安装 anthropic 套件（pip install anthropic），跳过翻译"

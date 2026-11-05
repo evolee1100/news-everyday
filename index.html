@@ -152,7 +152,7 @@ function card(it, i, region) {
       ${sum && sum !== title ? `<p class="sum">${esc(sum)}</p>` : ""}
       <div class="foot">
         ${it.sources > 1 ? `<span class="hot">🔥 ${it.sources} 家媒体</span>` : ""}
-        <span>${esc(it.source)}${zh ? `<span class="ai">AI 翻译</span>` : ""}</span><span>${ago(it.time)}</span>${rel}
+        <span>${esc(it.source)}${zh ? `<span class="ai">${it.tr === "ai" ? "AI 翻译" : "机器翻译"}</span>` : ""}</span><span>${ago(it.time)}</span>${rel}
         <button class="check" data-check>${isRead ? "已看 ✓" : "看过了"}</button>
       </div>
     </div>
