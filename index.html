@@ -48,7 +48,7 @@ h2 .hint { font-weight: 400; color: var(--muted); font-size: 13.8px; }
 .body { min-width: 0; }
 .title { font-size: 18.7px; font-weight: 650; line-height: 1.4; margin: 0; }
 .title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.sum { color: var(--muted); font-size: 15.4px; margin: 4px 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sum { color: var(--muted); font-size: 15.4px; margin: 4px 0 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .orig { color: var(--muted); font-size: 13.8px; margin: 2px 0 0; font-style: italic; }
 .ai { margin-left: 6px; font-size: 11.5px; padding: 0 5px; border: 1px solid var(--line); border-radius: 4px; }
 .foot { margin-top: 8px; font-size: 13.8px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
@@ -111,7 +111,8 @@ footer summary { cursor: pointer; }
 </div>
 
 <script>
-const BRIEF_WORLD = 5, BRIEF_MY = 8;   // 今日必知：国际 / 大马 各几条
+const BRIEF_WORLD = 5, BRIEF_MY = 5;   // 今日必知：国际 / 大马 各几条
+const FULL_MAX = 10;                   // 国际 / 马来西亚 分页最多几条
 const $ = s => document.querySelector(s);
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
@@ -182,11 +183,11 @@ function render() {
     html += section("🌍 国际", "", "全球最重要的事", w, "world");
     html += section("🇲🇾 马来西亚", "my", "本地最重要的事", m, "my");
     if (all.length && seen === all.length)
-      html += `<div class="allread"><strong>今天的地球你已经掌握了 ✓</strong>想多看一点？切到「国际」或「马来西亚」看完整排行。</div>`;
+      html += `<div class="allread"><strong>今天的地球你已经掌握了 ✓</strong>想多看一点？切到「国际」或「马来西亚」看前 10 条。</div>`;
   } else if (state.view === "world") {
-    html += section("🌍 国际头条", "", `共 ${W.length} 条，按重要性排序`, W, "world");
+    html += section("🌍 国际头条", "", `最重要的 ${Math.min(W.length, FULL_MAX)} 条`, W.slice(0, FULL_MAX), "world");
   } else {
-    html += section("🇲🇾 马来西亚头条", "my", `共 ${M.length} 条，按重要性排序`, M, "my");
+    html += section("🇲🇾 马来西亚头条", "my", `最重要的 ${Math.min(M.length, FULL_MAX)} 条`, M.slice(0, FULL_MAX), "my");
   }
   $("#main").innerHTML = html;
 }

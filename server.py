@@ -241,12 +241,12 @@ def build_news():
         status.append({"source": src["name"], "region": src["region"], "ok": err is None,
                        "count": len(fresh), "error": err})
         pool[src["region"]].extend(fresh)
-    world = rank(pool["world"], now)
+    world = rank(pool["world"], now, limit=15)
     # 马来西亚媒体也会报道国际大事（如美国大选）——国际版已有的就从大马版拿掉
     world_items = [{"lang": w["lang"], "_tok": tokens({"lang": w["lang"], "title": t})}
                    for w in pool["world"] for t in [w["title"]]]
-    my = [c for c in rank(pool["my"], now, limit=60)
-          if not any(similar({"lang": c["lang"], "_tok": tokens(c)}, w) for w in world_items)][:40]
+    my = [c for c in rank(pool["my"], now, limit=40)
+          if not any(similar({"lang": c["lang"], "_tok": tokens(c)}, w) for w in world_items)][:15]
     return {
         "updated": datetime.now(timezone.utc).isoformat(),
         "world": world,
